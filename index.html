@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hourly Rate Meme App</title>
+  <title>Hourly Rate Calculator</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -15,6 +15,14 @@
       padding: 8px;
       margin: 10px;
       font-size: 1.1em;
+      text-decoration: none;
+      border: none;
+      background-color: #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ccc;
     }
     .result {
       margin: 20px;
@@ -32,7 +40,8 @@
       background-color: #fff;
     }
     .roller {
-      animation: roll 10s linear infinite;
+      /* Slower scrolling: 30 seconds per cycle */
+      animation: roll 30s linear infinite;
     }
     @keyframes roll {
       from { transform: translateY(0); }
@@ -66,41 +75,71 @@
       font-size: 1.2em;
       color: #555;
     }
+    .meme-joke {
+      margin-top: 20px;
+      font-size: 1.4em;
+      color: #d14; /* Bright red for emphasis */
+    }
+    .share-button {
+      margin-top: 20px;
+    }
+    .share-button button {
+      padding: 8px 12px;
+      font-size: 1.1em;
+      background-color: #0077b5;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .share-button button:hover {
+      background-color: #005f8e;
+    }
   </style>
 </head>
 <body>
-  <h1>Hourly Rate Meme App</h1>
+  <h1>Hourly Rate Calculator</h1>
   <div>
     <input type="number" id="annualSalary" placeholder="Annual Salary ($)">
     <input type="number" id="hoursWorked" placeholder="Hours Worked This Week">
     <button onclick="calculateHourly()">Calculate</button>
   </div>
   <div class="result" id="result"></div>
+  
   <div class="roller-container">
     <div class="pointer">👉</div>
     <div class="roller" id="roller">
       <!-- The rolling list will be populated here -->
     </div>
   </div>
-  <!-- Ad Banner (Replace with your ad code, e.g., AdSense script) -->
+  
+  <!-- Meme Joke Display -->
+  <div class="meme-joke" id="memeJoke"></div>
+  
+  <!-- Share This Website Button -->
+  <div class="share-button">
+    <button onclick="copyLink()">Share This Website</button>
+  </div>
+  
+  <!-- Ad Banner (Replace with your ad code, e.g., Google AdSense) -->
   <div class="ad-banner">
     Ad Placeholder
   </div>
   
   <script>
-    // Updated memeRates with fun, quirky roles
+    // Meme roles with fun jokes
     const memeRates = [
-      { title: "Crypto Bro", rate: 100, emoji: "💰" },
-      { title: "Hedge Fund Manager", rate: 350, emoji: "📈" },
-      { title: "Freelance Meme Consultant", rate: 5, emoji: "😂" },
-      { title: "Professional Netflix Binger", rate: 0, emoji: "📺" },
-      { title: "Fortune Cookie Writer", rate: 20, emoji: "🥠" },
-      { title: "Startup Guru", rate: 15, emoji: "🚀" },
-      { title: "Finance Wiz", rate: 70, emoji: "💼" },
-      { title: "Gadget Reviewer", rate: 50, emoji: "🔌" },
-      { title: "Social Media Influencer", rate: 120, emoji: "📸" }
+      { title: "Crypto Bro", rate: 100, emoji: "💰", joke: "Your rate is so volatile, even Bitcoin's jealous!" },
+      { title: "Hedge Fund Manager", rate: 350, emoji: "📈", joke: "At this rate, you're basically managing a small empire!" },
+      { title: "Freelance Meme Consultant", rate: 5, emoji: "😂", joke: "Could you be charging per meme? Your talent is priceless!" },
+      { title: "Professional Netflix Binger", rate: 0, emoji: "📺", joke: "Binge-watching on the clock – talk about free time!" },
+      { title: "Fortune Cookie Writer", rate: 20, emoji: "🥠", joke: "Your future's as sweet as a fortune cookie!" },
+      { title: "Startup Guru", rate: 15, emoji: "🚀", joke: "Pivot, hustle, and innovate – you're the next unicorn!" },
+      { title: "Finance Wiz", rate: 70, emoji: "💼", joke: "Numbers don't lie – you're a wizard with those digits!" },
+      { title: "Gadget Reviewer", rate: 50, emoji: "🔌", joke: "Even the latest tech can't out-rate you!" },
+      { title: "Social Media Influencer", rate: 120, emoji: "📸", joke: "You're so Insta-famous, even your hourly rate trends!" }
     ];
-  
+    
     function calculateHourly() {
       const salary = parseFloat(document.getElementById('annualSalary').value);
       const hours = parseFloat(document.getElementById('hoursWorked').value);
@@ -111,10 +150,11 @@
       // Calculate the implied hourly rate: (Annual Salary / 52 weeks) divided by hours worked this week.
       const hourlyRate = (salary / 52) / hours;
       document.getElementById('result').innerText = "Your Implied Hourly Rate: $" + hourlyRate.toFixed(2);
-      updateRoller(hourlyRate);
+      updateRoller();
+      updateMemeJoke(hourlyRate);
     }
   
-    function updateRoller(userRate) {
+    function updateRoller() {
       const roller = document.getElementById('roller');
       roller.innerHTML = '';
       // Extend the list for a smooth scrolling effect
@@ -125,7 +165,33 @@
         div.innerText = `${item.emoji} ${item.title} - $${item.rate}/hr`;
         roller.appendChild(div);
       });
-      // Future enhancement: Scroll to the closest match if desired
+    }
+  
+    function updateMemeJoke(userRate) {
+      let closestDiff = Infinity;
+      let closestMatch = null;
+      memeRates.forEach(item => {
+        let diff = Math.abs(item.rate - userRate);
+        if (diff < closestDiff) {
+          closestDiff = diff;
+          closestMatch = item;
+        }
+      });
+      if (closestMatch) {
+        document.getElementById('memeJoke').innerText = closestMatch.joke;
+      } else {
+        document.getElementById('memeJoke').innerText = "";
+      }
+    }
+    
+    // Copy the current website link to the clipboard
+    function copyLink() {
+      const currentURL = window.location.href;
+      navigator.clipboard.writeText(currentURL).then(function() {
+        alert("Website link copied to clipboard!");
+      }, function(err) {
+        alert("Error copying link: " + err);
+      });
     }
   </script>
 </body>
