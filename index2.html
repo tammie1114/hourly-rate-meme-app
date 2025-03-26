@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hourly Rate Meme App</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fafafa;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 10px;
+      font-size: 1.1em;
+    }
+    .result {
+      margin: 20px;
+      font-size: 1.8em;
+      color: #d14;
+    }
+    .roller-container {
+      position: relative;
+      margin: 20px auto;
+      width: 300px;
+      height: 200px;
+      overflow: hidden;
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      background-color: #fff;
+    }
+    .roller {
+      animation: roll 10s linear infinite;
+    }
+    @keyframes roll {
+      from { transform: translateY(0); }
+      to { transform: translateY(-100%); }
+    }
+    .meme-rate {
+      padding: 10px;
+      font-size: 1.2em;
+      border-bottom: 1px solid #eee;
+    }
+    .pointer {
+      position: absolute;
+      left: -50px;
+      top: 80px;
+      font-size: 2em;
+      animation: bounce 1s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .ad-banner {
+      margin: 20px auto;
+      width: 300px;
+      height: 250px;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #eee;
+      font-size: 1.2em;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hourly Rate Meme App</h1>
+  <div>
+    <input type="number" id="annualSalary" placeholder="Annual Salary ($)">
+    <input type="number" id="hoursWorked" placeholder="Hours Worked This Week">
+    <button onclick="calculateHourly()">Calculate</button>
+  </div>
+  <div class="result" id="result"></div>
+  <div class="roller-container">
+    <div class="pointer">👉</div>
+    <div class="roller" id="roller">
+      <!-- The rolling list will be populated here -->
+    </div>
+  </div>
+  <!-- Ad Banner (Replace with your ad code, e.g., AdSense script) -->
+  <div class="ad-banner">
+    Ad Placeholder
+  </div>
+  
+  <script>
+    // Updated memeRates with fun, quirky roles
+    const memeRates = [
+      { title: "Crypto Bro", rate: 100, emoji: "💰" },
+      { title: "Hedge Fund Manager", rate: 350, emoji: "📈" },
+      { title: "Freelance Meme Consultant", rate: 5, emoji: "😂" },
+      { title: "Professional Netflix Binger", rate: 0, emoji: "📺" },
+      { title: "Fortune Cookie Writer", rate: 20, emoji: "🥠" },
+      { title: "Startup Guru", rate: 15, emoji: "🚀" },
+      { title: "Finance Wiz", rate: 70, emoji: "💼" },
+      { title: "Gadget Reviewer", rate: 50, emoji: "🔌" },
+      { title: "Social Media Influencer", rate: 120, emoji: "📸" }
+    ];
+  
+    function calculateHourly() {
+      const salary = parseFloat(document.getElementById('annualSalary').value);
+      const hours = parseFloat(document.getElementById('hoursWorked').value);
+      if (!salary || !hours) {
+        alert("Please enter both values.");
+        return;
+      }
+      // Calculate the implied hourly rate: (Annual Salary / 52 weeks) divided by hours worked this week.
+      const hourlyRate = (salary / 52) / hours;
+      document.getElementById('result').innerText = "Your Implied Hourly Rate: $" + hourlyRate.toFixed(2);
+      updateRoller(hourlyRate);
+    }
+  
+    function updateRoller(userRate) {
+      const roller = document.getElementById('roller');
+      roller.innerHTML = '';
+      // Extend the list for a smooth scrolling effect
+      let extendedList = memeRates.concat(memeRates).concat(memeRates);
+      extendedList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'meme-rate';
+        div.innerText = `${item.emoji} ${item.title} - $${item.rate}/hr`;
+        roller.appendChild(div);
+      });
+      // Future enhancement: Scroll to the closest match if desired
+    }
+  </script>
+</body>
+</html>
